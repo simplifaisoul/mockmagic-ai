@@ -1,8 +1,5 @@
-// Webhook URL - Update this with your actual n8n webhook URL
-// Get the URL from your n8n Webhook trigger node after setting it up
-// It should look like: https://n8n.simplifai-1.org/webhook/[webhook-id]
-// NOTE: Your workflow needs a Webhook trigger node - see N8N_SETUP.md for instructions
-const WEBHOOK_URL = 'https://n8n.simplifai-1.org/webhook/a8664fb3-6396-4850-a693-dc24005247c5';
+// Webhook URL - n8n webhook endpoint
+const WEBHOOK_URL = 'https://n8n.simplifai-1.org/webhook-test/983c0d13-2bef-493e-879d-85c246bfa512';
 
 // DOM Elements
 const imageInput = document.getElementById('imageInput');
