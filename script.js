@@ -1,5 +1,8 @@
-// Webhook URL - Fixed double https
-const WEBHOOK_URL = 'https://n8n.simplifai-1.org/webhook/983c0d13-2bef-493e-879d-85c246bfa512';
+// Webhook URL - Update this with your actual n8n webhook URL
+// Get the URL from your n8n Webhook trigger node after setting it up
+// It should look like: https://n8n.simplifai-1.org/webhook/[webhook-id]
+// NOTE: Your workflow needs a Webhook trigger node - see N8N_SETUP.md for instructions
+const WEBHOOK_URL = 'https://n8n.simplifai-1.org/webhook/a8664fb3-6396-4850-a693-dc24005247c5';
 
 // DOM Elements
 const imageInput = document.getElementById('imageInput');
@@ -198,25 +201,44 @@ async function handleGenerate() {
         
         const response = await fetch(WEBHOOK_URL, {
             method: 'POST',
+            mode: 'cors', // Enable CORS
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
             },
             body: JSON.stringify(payload)
+        }).catch((fetchError) => {
+            // Handle network errors (CORS, connection issues, etc.)
+            console.error('Fetch error details:', fetchError);
+            
+            // Provide more specific error messages
+            if (fetchError.message.includes('Failed to fetch') || fetchError.message.includes('NetworkError')) {
+                throw new Error('Network error: Unable to connect to the server. This could be due to CORS restrictions or the server being unavailable. Please check your n8n webhook configuration.');
+            } else if (fetchError.message.includes('CORS')) {
+                throw new Error('CORS error: The server needs to allow requests from this domain. Please configure CORS in your n8n webhook settings.');
+            } else {
+                throw new Error(`Connection error: ${fetchError.message}`);
+            }
         });
         
         console.log('Response status:', response.status);
         console.log('Response headers:', Object.fromEntries(response.headers.entries()));
         
-        const responseData = await response.json().catch(() => {
-            // If response is not JSON, return text
-            return response.text().then(text => ({ message: text }));
+        // Check if response is ok before trying to parse
+        if (!response.ok) {
+            const errorText = await response.text().catch(() => 'Unknown error');
+            console.error('Error response:', errorText);
+            throw new Error(`Server returned error ${response.status}: ${errorText}`);
+        }
+        
+        const responseData = await response.json().catch(async () => {
+            // If response is not JSON, try to get text
+            const text = await response.text();
+            console.log('Non-JSON response:', text);
+            return { message: text, success: true };
         });
         
         console.log('Response data:', responseData);
-        
-        if (!response.ok) {
-            throw new Error(responseData.message || `Server error: ${response.status}`);
-        }
         
         // Check if response contains result_url
         if (responseData.result_url) {
@@ -244,7 +266,14 @@ async function handleGenerate() {
     } catch (error) {
         console.error('Error generating mockup:', error);
         loadingSpinner.style.display = 'none';
-        showError(`Failed to generate mockup: ${error.message}. Please check your connection and try again.`);
+        
+        // Provide more helpful error messages
+        let errorMessage = error.message;
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorMessage = 'Unable to connect to the webhook server. Please ensure:\n1. The n8n webhook is active and running\n2. CORS is enabled in your n8n webhook settings\n3. The webhook URL is correct';
+        }
+        
+        showError(errorMessage);
     } finally {
         generateBtn.disabled = false;
         updateGenerateButton();
@@ -280,15 +309,15 @@ function showSuccessMessage(isEmailOnly = false) {
 
 // Show Error
 function showError(message) {
-    errorText.textContent = message;
+    errorText.innerHTML = message.replace(/\n/g, '<br>');
     errorMessage.style.display = 'flex';
     resultSection.style.display = 'block';
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
-    // Hide error after 5 seconds
+    // Hide error after 8 seconds (longer for multi-line messages)
     setTimeout(() => {
         errorMessage.style.display = 'none';
-    }, 5000);
+    }, 8000);
 }
 
 // Download Image
