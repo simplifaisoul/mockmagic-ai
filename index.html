@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockMagic AI - AI-Powered Mockup Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-magic"></i>
+                    <span>MockMagic AI</span>
+                </div>
+                <p class="tagline">Transform your images into stunning mockups with AI</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="section-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-upload"></i>
+                        Upload Your Image
+                    </h2>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p class="upload-text">Click to upload or drag and drop</p>
+                            <p class="upload-hint">PNG, JPG, GIF up to 10MB</p>
+                        </div>
+                        <div class="preview-container" id="previewContainer" style="display: none;">
+                            <img id="previewImage" src="" alt="Preview">
+                            <button class="remove-image" id="removeImage" aria-label="Remove image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Controls Section -->
+            <section class="controls-section">
+                <div class="section-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-sliders-h"></i>
+                        Customize Your Mockup
+                    </h2>
+                    
+                    <!-- Style Dropdown -->
+                    <div class="form-group">
+                        <label for="styleSelect">
+                            <i class="fas fa-palette"></i>
+                            Mockup Style
+                        </label>
+                        <select id="styleSelect" class="form-control">
+                            <option value="">Select a style...</option>
+                            <option value="modern">Modern</option>
+                            <option value="classic">Classic</option>
+                            <option value="minimalist">Minimalist</option>
+                            <option value="vintage">Vintage</option>
+                            <option value="futuristic">Futuristic</option>
+                            <option value="elegant">Elegant</option>
+                            <option value="bold">Bold</option>
+                            <option value="soft">Soft</option>
+                        </select>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="form-group email-group">
+                        <div class="email-notice">
+                            <i class="fas fa-envelope"></i>
+                            <p><strong>Important:</strong> Your generated mockup will be emailed to you. Please provide a valid email address to receive your result.</p>
+                        </div>
+                        <label for="emailInput">
+                            <i class="fas fa-at"></i>
+                            Email Address <span style="color: var(--primary-purple);">*</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            id="emailInput" 
+                            class="form-control" 
+                            placeholder="your.email@example.com"
+                            required
+                        >
+                    </div>
+
+                    <!-- Custom Prompt -->
+                    <div class="form-group">
+                        <label for="customPrompt">
+                            <i class="fas fa-comment-alt"></i>
+                            Custom Prompt (Optional)
+                        </label>
+                        <textarea 
+                            id="customPrompt" 
+                            class="form-control" 
+                            rows="3" 
+                            placeholder="Describe any specific requirements or adjustments you'd like..."
+                        ></textarea>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <button class="generate-btn" id="generateBtn" disabled>
+                        <i class="fas fa-sparkles"></i>
+                        <span>Generate Mockup</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Result Section -->
+            <section class="result-section" id="resultSection" style="display: none;">
+                <div class="section-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-image"></i>
+                        Generated Mockup
+                    </h2>
+                    <div class="result-container">
+                        <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+                            <div class="spinner"></div>
+                            <p>Generating your mockup...</p>
+                        </div>
+                        <div class="result-image-container" id="resultImageContainer" style="display: none;">
+                            <img id="resultImage" src="" alt="Generated Mockup">
+                            <div class="result-actions">
+                                <button class="download-btn" id="downloadBtn">
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                        <div class="error-message" id="errorMessage" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p id="errorText"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section class="history-section">
+                <div class="section-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-history"></i>
+                        History Gallery
+                    </h2>
+                    <div class="history-grid" id="historyGrid">
+                        <div class="empty-history">
+                            <i class="fas fa-images"></i>
+                            <p>No mockups generated yet. Create your first one above!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 MockMagic AI by SimplifAI-1. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
