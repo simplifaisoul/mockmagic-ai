@@ -1,5 +1,6 @@
 // Webhook URL - n8n webhook endpoint
-const WEBHOOK_URL = 'https://n8n.simplifai-1.org/webhook-test/983c0d13-2bef-493e-879d-85c246bfa512';
+// Using webhookId from the webhook node: 395a1722-fc05-4cc4-8156-cbe4b37dbc23
+const WEBHOOK_URL = 'https://n8n.simplifai-1.org/webhook/395a1722-fc05-4cc4-8156-cbe4b37dbc23';
 
 // DOM Elements
 const imageInput = document.getElementById('imageInput');
